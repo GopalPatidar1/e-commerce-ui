@@ -19,21 +19,21 @@ export default function CartItem({
     return (
         <article className="cart-item">
             <img
-                src={`${process.env.NEXT_PUBLIC_API_URL}${item.img_path}`}
+                src={`${process.env.NEXT_PUBLIC_API_URL}${item.product.img_path}`}
                 alt={item.name}
                 className="cart-item-image"
             />
 
             <div className="cart-item-info">
-                <h3>{item.name}</h3>
+                <h3>{item.product.name}</h3>
 
                 <p>
-                    ₹{item.amount.toFixed(2)}
+                    ₹{item.product.amount.toFixed(2)}
                 </p>
 
                 <div className="quantity-control">
                     <button
-                        onClick={() => decreaseQuantity(item.id)}
+                        onClick={() => decreaseQuantity(item.product.id)}
                         aria-label="Decrease quantity"
                     >
                         −
@@ -42,7 +42,7 @@ export default function CartItem({
                     <span>{item.quantity}</span>
 
                     <button
-                        onClick={() => increaseQuantity(item.id)}
+                        onClick={() => increaseQuantity(item.product.id)}
                         aria-label="Increase quantity"
                     >
                         +
@@ -51,10 +51,6 @@ export default function CartItem({
             </div>
 
             <div className="cart-item-actions">
-                <strong>
-                    ₹{(item.amount * item.quantity).toFixed(2)}
-                </strong>
-
                 <button
                     className="remove-button"
                     onClick={() => removeFromCart(item.id)}

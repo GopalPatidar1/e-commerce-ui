@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import type { CartItem, Product } from "@/types/product";
+import { getMyCarts, addToCartApi, removeFromCartApi } from "@/lib/api/cartServer";
 
 interface CartContextType {
     items: CartItem[];
@@ -27,19 +28,22 @@ const CartContext = createContext<CartContextType | undefined>(
 );
 
 export function CartProvider({ children }: { children: ReactNode }) {
-    const [items, setItems] = useState<CartItem[]>([]);
+    const [items, setItems] = useState<any[]>([]);
 
     // Load cart from browser storage
-    useEffect(() => {
-        const savedCart = localStorage.getItem("cart");
 
-        if (savedCart) {
-            try {
-                setItems(JSON.parse(savedCart));
-            } catch {
-                localStorage.removeItem("cart");
-            }
+    const loadCart = async () => {
+        const savedCart = await getMyCarts();
+
+        try {
+            setItems(savedCart);
+        } catch {
+            localStorage.removeItem("cart");
         }
+    }
+
+    useEffect(() => {
+        loadCart()
     }, []);
 
     // Save cart whenever it changes
@@ -47,37 +51,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
         localStorage.setItem("cart", JSON.stringify(items));
     }, [items]);
 
-    function addToCart(product: Product) {
-        setItems((currentItems) => {
-            const existingItem = currentItems.find(
-                (item) => item.id === product.id
-            );
-
-            if (existingItem) {
-                return currentItems.map((item) =>
-                    item.id === product.id
-                        ? {
-                            ...item,
-                            quantity: item.quantity + 1,
-                        }
-                        : item
-                );
-            }
-
-            return [
-                ...currentItems,
-                {
-                    ...product,
-                    quantity: 1,
-                },
-            ];
-        });
+    async function addToCart(product: Product) {
+        if (!product?.id) return
+        await addToCartApi(product.id)
+        await loadCart()
     }
 
-    function removeFromCart(productId: string) {
-        setItems((currentItems) =>
-            currentItems.filter((item) => item.id !== productId)
-        );
+    async function removeFromCart(productId: string) {
+        await removeFromCartApi(productId)
+        await loadCart()
     }
 
     function increaseQuantity(productId: string) {
@@ -94,39 +76,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     function decreaseQuantity(productId: string) {
-        setItems((currentItems) =>
-            currentItems
-                .map((item) =>
-                    item.id === productId
-                        ? {
-                            ...item,
-                            quantity: item.quantity - 1,
-                        }
-                        : item
-                )
-                .filter((item) => item.quantity > 0)
-        );
     }
 
     function clearCart() {
-        setItems([]);
     }
 
     const totalItems = useMemo(
         () =>
-            items.reduce(
-                (total, item) => total + item.quantity,
-                0
-            ),
+            0,
         [items]
     );
 
     const totalPrice = useMemo(
         () =>
-            items.reduce(
-                (total, item) => total + item.amount * item.quantity,
-                0
-            ),
+            0,
         [items]
     );
 

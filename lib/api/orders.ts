@@ -28,10 +28,23 @@ export async function getMyOrders(): Promise<Order[]> {
         {
             method: "GET",
             credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
             cache: "no-store",
+        }
+    );
+
+    return handleResponse<Order[]>(response);
+}
+
+
+export async function buyProduct(product_id: string): Promise<Order[]> {
+    const response = await fetch(
+        `${API_URL}/orders`,
+        {
+            method: "POST",
+            credentials: "include",
+            cache: "no-store",
+            headers: { "Content-Type": "application/json", },
+            body: JSON.stringify({ product_id: product_id }),
         }
     );
 

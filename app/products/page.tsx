@@ -5,12 +5,7 @@ import { getProducts } from "@/lib/api/productsServer";
 
 export default async function ProductsPage() {
     let products: any = [];
-
-    try {
-        products = await getProducts();
-    } catch (error) {
-        console.error("Failed to load products:", error);
-    }
+    products = await getProducts();
 
     return (
         <main className="shop-page">
@@ -24,10 +19,15 @@ export default async function ProductsPage() {
                         Discover products you'll love.
                     </p>
                 </div>
+                <div className="flex flex-row gap-4">
+                    <Link href="/orders" className="cart-link">
+                        View Order
+                    </Link>
 
-                <Link href="/cart" className="cart-link">
-                    View Cart
-                </Link>
+                    <Link href="/cart" className="cart-link">
+                        View Cart
+                    </Link>
+                </div>
             </header>
 
             {products.length === 0 ? (

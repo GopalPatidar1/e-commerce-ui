@@ -18,7 +18,13 @@ export interface OrderItem {
 export interface Order {
     id: string;
     status: OrderStatus;
-    total_amount: number;
+    product: {
+        name: string;
+        description: string
+        img_path: string
+    };
+    amount: number;
+    quantity: number;
     created_at: string;
     updated_at?: string;
     items: OrderItem[];

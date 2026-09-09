@@ -48,45 +48,45 @@ export default function OrderCard({
             </div>
 
             <div className="order-products">
-                {order.items.map((item) => (
-                    <div
-                        key={item.id}
-                        className="order-product"
-                    >
-                        <img
-                            src={item.image_path}
-                            alt={item.product_name}
-                        />
+                {/* {order.map((item) => ( */}
+                <div
+                    key={order.id}
+                    className="order-product"
+                >
+                    <img
+                        src={`${process.env.NEXT_PUBLIC_API_URL}${order.product.img_path}`}
+                        alt={order.product.name}
+                    />
 
-                        <div className="order-product-info">
-                            <h3>{item.product_name}</h3>
+                    <div className="order-product-info">
+                        <h3>{order.product.name}</h3>
 
-                            <p>
-                                ₹{item.price.toFixed(2)} ×{" "}
-                                {item.quantity}
-                            </p>
-                        </div>
-
-                        <strong>
-                            ₹
-                            {(
-                                item.price * item.quantity
-                            ).toFixed(2)}
-                        </strong>
+                        <p>
+                            ₹{order.amount.toFixed(2)} ×{" "}
+                            {order.quantity}
+                        </p>
                     </div>
-                ))}
+
+                    <strong>
+                        ₹
+                        {(
+                            order.amount * order.quantity
+                        ).toFixed(2)}
+                    </strong>
+                </div>
+                {/* ))} */}
             </div>
 
             <div className="order-card-footer">
                 <span>
-                    {order.items.length}{" "}
-                    {order.items.length === 1
+                    {order.quantity}{" "}
+                    {order.quantity === 1
                         ? "product"
                         : "products"}
                 </span>
 
                 <strong>
-                    Total: ₹{order.total_amount.toFixed(2)}
+                    Total: ₹{order.amount.toFixed(2)}
                 </strong>
             </div>
         </article>

@@ -3,13 +3,7 @@ import { getProducts } from "@/lib/api/productsServer";
 import ProductCard from "@/components/shop/ProductCard";
 
 export default async function AdminProductsPage() {
-    let products: any = [];
-
-    try {
-        products = await getProducts();
-    } catch (error) {
-        console.error("Failed to load products:", error);
-    }
+    let products: any = await getProducts();
     return (
         <main className="admin-page">
             <header className="admin-header">

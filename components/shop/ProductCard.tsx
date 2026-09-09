@@ -2,14 +2,13 @@
 
 import type { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
+import { buyProduct } from "@/lib/api/orders";
 
 interface ProductCardProps {
   product: Product;
 }
 
-export default function ProductCard({
-  product,
-}: ProductCardProps) {
+export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
 
   return (
@@ -34,12 +33,22 @@ export default function ProductCard({
             ₹{product.amount.toFixed(2)}
           </span>
 
-          <button
-            className="buy-button"
-            onClick={() => addToCart(product)}
-          >
-            Buy
-          </button>
+
+          <div className="flex flex-row gap-4">
+            <button
+              className="buy-button"
+              onClick={() => addToCart(product)}
+            >
+              Cart
+            </button>
+
+            <button
+              className="buy-button"
+              onClick={() => buyProduct(product.id)}
+            >
+              Buy
+            </button>
+          </div>
         </div>
       </div>
     </article>

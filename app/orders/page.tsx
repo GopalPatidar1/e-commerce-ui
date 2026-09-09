@@ -16,7 +16,7 @@ export default function OrdersPage() {
         async function loadOrders() {
             try {
                 const data = await getMyOrders();
-                setOrders(data);
+                setOrders(data.result);
             } catch (error) {
                 setError(
                     error instanceof Error

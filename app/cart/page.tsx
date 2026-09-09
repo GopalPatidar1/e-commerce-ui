@@ -6,21 +6,18 @@ import { useCart } from "@/context/CartContext";
 
 export default function CartPage() {
     const {
-        items,
+        items: res,
         totalItems,
         totalPrice,
         clearCart,
     } = useCart();
+    const items = res?.result ?? []
+
 
     function handleBuy() {
-        // Later this will call your Python API.
-        console.log("Buying:", items);
-
         alert(
             `Order placed for ₹${totalPrice.toFixed(2)}`
         );
-
-        clearCart();
     }
 
     if (items.length === 0) {
