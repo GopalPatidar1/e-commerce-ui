@@ -18,6 +18,7 @@ export interface OrderItem {
 export interface Order {
     id: string;
     status: OrderStatus;
+    payment_url?: string;
     product: {
         name: string;
         description: string

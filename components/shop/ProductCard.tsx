@@ -44,7 +44,17 @@ export default function ProductCard({ product }: ProductCardProps) {
 
             <button
               className="buy-button"
-              onClick={() => buyProduct(product.id)}
+              // onClick={() => buyProduct(product.id)}
+              onClick={async () => {
+                if (!product.id) return
+                try {
+                  const result = await buyProduct(product.id);
+                  if (result?.payment_url) window.location.href = result.payment_url;
+
+                } catch (error) {
+                  console.error("Payment error:", error);
+                }
+              }}
             >
               Buy
             </button>

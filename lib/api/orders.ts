@@ -36,7 +36,7 @@ export async function getMyOrders(): Promise<Order[]> {
 }
 
 
-export async function buyProduct(product_id: string): Promise<Order[]> {
+export async function buyProduct(product_id: string): Promise<Order> {
     const response = await fetch(
         `${API_URL}/orders`,
         {
@@ -48,5 +48,5 @@ export async function buyProduct(product_id: string): Promise<Order[]> {
         }
     );
 
-    return handleResponse<Order[]>(response);
+    return handleResponse<Order>(response);
 }
