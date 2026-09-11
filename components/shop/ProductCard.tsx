@@ -3,13 +3,39 @@
 import type { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
 import { buyProduct } from "@/lib/api/orders";
+import { useCallback, useState, useRef } from "react";
 
 interface ProductCardProps {
   product: Product;
 }
+const idempotency_key = crypto.randomUUID();
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const { addToCart } = useCart();
+
+  // Prevent multiple simultaneous requests 
+  const requestInProgress = useRef(false); // One key belongs to one purchase attempt 
+  const idempotencyKey = useRef<string | null>(null);
+
+  const buyProductFun = useCallback(async (id: string) => {
+    if (requestInProgress.current) { return; }
+    requestInProgress.current = true;
+    setIsLoading(true);
+    try {
+      if (!idempotencyKey.current) { idempotencyKey.current = crypto.randomUUID(); }
+      const key = idempotencyKey.current;
+
+      const result = await buyProduct(id, key);
+      if (result?.payment_url) window.location.href = result.payment_url;
+      idempotencyKey.current = null;
+    } catch (ee) { }
+
+    finally {
+      requestInProgress.current = false;
+      setIsLoading(false)
+    }
+  }, [isLoading])
 
   return (
     <article className="product-card">
@@ -44,16 +70,10 @@ export default function ProductCard({ product }: ProductCardProps) {
 
             <button
               className="buy-button"
-              // onClick={() => buyProduct(product.id)}
+              disabled={isLoading}
               onClick={async () => {
                 if (!product.id) return
-                try {
-                  const result = await buyProduct(product.id);
-                  if (result?.payment_url) window.location.href = result.payment_url;
-
-                } catch (error) {
-                  console.error("Payment error:", error);
-                }
+                buyProductFun(product.id)
               }}
             >
               Buy

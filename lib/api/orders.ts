@@ -36,7 +36,7 @@ export async function getMyOrders(): Promise<Order[]> {
 }
 
 
-export async function buyProduct(product_id: string): Promise<Order> {
+export async function buyProduct(product_id: string, idempotency_key: string): Promise<Order> {
     const response = await fetch(
         `${API_URL}/orders`,
         {
@@ -44,7 +44,7 @@ export async function buyProduct(product_id: string): Promise<Order> {
             credentials: "include",
             cache: "no-store",
             headers: { "Content-Type": "application/json", },
-            body: JSON.stringify({ product_id: product_id }),
+            body: JSON.stringify({ product_id: product_id, idempotency_key: idempotency_key }),
         }
     );
 
